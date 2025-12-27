@@ -13,18 +13,18 @@ def notify_site(site, vulns, notify_url, token):
     :return: None
     """
     if not notify_url:
-        logger.debug(f"{site} : aucune URL de notification définie")
+        logger.debug(f"{site} : No NTFY URL given")
         return
 
     if not vulns:
-        logger.info(f"{site} : aucune vulnérabilité à notifier")
+        logger.info(f"{site} : No vulnerability to send")
         return
 
-    logger.info(f"{site} : envoi de {len(vulns)} notification(s)")
+    logger.info(f"{site} : send {len(vulns)} notification(s)")
 
-    message = f"{site} – {len(vulns)} vulnérabilité(s) détectée(s)\n\n"
+    message = f"{site} – {len(vulns)} detected vulnerabilities \n\n"
     for v in vulns:
-        status = "PATCHÉE" if v["patched"] else "NON PATCHÉE"
+        status = "PATCHED" if v["patched"] else "NOT PATCHED"
         message += f"- [{v['severity']}] {v['plugin']} ({status}) – {v['title']} {v['cve']}\n"
 
     cmd = [
