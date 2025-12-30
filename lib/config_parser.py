@@ -1,5 +1,6 @@
 import configparser
 from datetime import datetime, timedelta
+import json
 
 
 def load_config(path="config.ini"):
@@ -40,12 +41,14 @@ def get_sites(config):
     for section in config.sections():
         if section == "CONFIG":
             continue
-
+        
+        print(section)
         sites[section] = {
-            "plugins": [p.strip() for p in config[section].get("plugin_list", "").split("|") if p.strip()],
+            "plugins": [p.strip() for p in json.loads(config[section].get("plugin_list", "None").replace("\n","")) if p.strip()],
             "notify_url": config[section].get("NOTIFY_URL", "").strip(),
             "notify_token": config[section].get("NOTIFY_TOKEN", "").strip()
         }
+        print(sites)
 
     return sites
 
