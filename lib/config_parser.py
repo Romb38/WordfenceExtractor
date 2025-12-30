@@ -48,7 +48,6 @@ def get_sites(config):
             "notify_url": config[section].get("NOTIFY_URL", "").strip(),
             "notify_token": config[section].get("NOTIFY_TOKEN", "").strip()
         }
-        print(sites)
 
     return sites
 
