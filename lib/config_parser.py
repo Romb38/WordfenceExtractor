@@ -42,7 +42,6 @@ def get_sites(config):
         if section == "CONFIG":
             continue
         
-        print(section)
         sites[section] = {
             "plugins": [p.strip() for p in json.loads(config[section].get("plugin_list", "None").replace("\n","")) if p.strip()],
             "notify_url": config[section].get("NOTIFY_URL", "").strip(),
