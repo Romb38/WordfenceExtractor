@@ -1,0 +1,47 @@
+[CONFIG]
+# Correspond to the Wordfence current URL
+API_URL = https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production
+# 'True' includes patched exploit in scan, 'False' remove them
+PATCHED = True
+# Min danger to scan for. Values can be 'Low'/'Medium'/'High'/'Critical'
+MIN_DANGER = Medium
+# Since when to scan for vulnerability. 7d = since 7 days and 7w = since 7 weeks
+#SINCE=7d
+
+# List here plugin by website to scan for
+[MyAwesomeWebsite]
+plugin_list = [
+    "Activity Log",
+    "Advanced Access Manager",
+    "Advanced Editor Tools",
+    "Akismet Anti-spam: Spam Protection",
+    "Content Views",
+    "Custom Code Plugin",
+    "Disable XML-RPC-API",
+    "Easy Username Updater",
+    "FileBird Lite",
+    "Hide/Remove Metadata",
+    "Ivory Search",
+    "Justified Gallery",
+    "Media Cleaner",
+    "Menu Icons",
+    "PublishPress Capabilities",
+    "PublishPress Future",
+    "Spectra",
+    "UpdraftPlus - Sauvegarde/Restauration",
+    "Wordfence Login Security",
+    "Wordfence Security",
+    "WP Hide Show Featured Image",
+    "WP Mail SMTP",
+    "WP Statistics",
+    "WP-Optimize - Nettoyer, compresser, mettre en cache",
+    "WPCode Lite",
+    "WPS Hide Login"
+    ]
+
+# You can also add NTFY configuration in order to send a notification if you find any exploits
+#NOTIFY_URL = https://ntfy.exemple.fr/subject
+#NOTIFY_TOKEN = XXXX
+
+[MyAlsoAwesomeWebsite]
+plugin_list = ["cde","fgh"]
