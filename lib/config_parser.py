@@ -42,7 +42,7 @@ def get_sites(config):
             continue
 
         sites[section] = {
-            "plugins": [p.strip() for p in config[section].get("plugin_list", "").split(",") if p.strip()],
+            "plugins": [p.strip() for p in config[section].get("plugin_list", "").split("|") if p.strip()],
             "notify_url": config[section].get("NOTIFY_URL", "").strip(),
             "notify_token": config[section].get("NOTIFY_TOKEN", "").strip()
         }
