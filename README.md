@@ -1,5 +1,7 @@
 <h1 align="center">Wordfence Exploit Extractor</h1>
 
+THIS PROJECT IS NOT LINKED IN ANY WAY WITH WORDFENCE, IT'S ONLY A TOOL THAT I MADE AND MAINTAINS IN ORDER TO AUTOMATICALLY CHECKS MY WORDPRESS INSTANCES
+
 This project allows users to define **plugin lists per website** in order to stay informed about **newly discovered vulnerabilities** affecting their WordPress environments.
 
 It can also send **push notifications** to administrators using [ntfy](https://ntfy.sh/), allowing different notification channels per website.
