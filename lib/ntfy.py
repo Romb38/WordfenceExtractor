@@ -76,7 +76,7 @@ def build_vuln_message(site, vulns):
 def notify_site(site, vulns, notify_url, token):
     """
     Send a notification to user using Ntfy API with found vulnerabilities
-    
+
     :param site: Website concerned
     :param vulns: Vulnerabilities found
     :param notify_url: Ntfy API URL
@@ -102,7 +102,6 @@ def notify_site(site, vulns, notify_url, token):
 
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    logger.info(message)
     try:
         response = requests.post(notify_url, headers=headers, data=message.encode("utf-8"))
         if response.status_code >= 400:
