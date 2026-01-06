@@ -33,11 +33,11 @@ def parse_since(value):
     return None
 
 
-def get_sites(config, site_type):
+def get_sites(config, scan_type):
     """
     Retrieves the sites configured in the config file
     :param config: Dictionary of configuration
-    :param site_type: Type of website
+    :param scan_type: Scan asked
     :return: Dictionary of sites
     """
     sites : List[AppConfig] = []
@@ -46,12 +46,12 @@ def get_sites(config, site_type):
         if section == "CONFIG":
             continue
 
-        if not (config[section].get("app_type") and config[section]["app_type"].lower() == site_type.lower()):
+        if not (config[section].get("scan_type") and config[section]["scan_type"].lower() == scan_type.lower()):
             continue
 
         sites.append(AppConfig(
             app_name=section,
-            plugin_list=[p.strip() for p in json.loads(config[section].get("plugin_list", "None").replace("\n", "")) if
+            dependencies=[p.strip() for p in json.loads(config[section].get("dependencies", "None").replace("\n", "")) if
                          p.strip()],
             notify_url=config[section].get("notify_url", "").strip(),
             notify_token=config[section].get("notify_token", "").strip(),

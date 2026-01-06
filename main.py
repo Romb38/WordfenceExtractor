@@ -1,12 +1,12 @@
 from lib.configuration import get_sites, logger, get_global_filters, load_config
 from lib.notification import notify_site
+from lib.osv_extractor import osv_extractor
 from lib.wordfence_extractor import wordfence_extractor
 
 app_types = {
     "wordpress": wordfence_extractor,
+    "osv": osv_extractor,
 }
-
-
 
 def main():
     # 1 - Load global config
