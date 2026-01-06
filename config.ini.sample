@@ -1,16 +1,21 @@
 [CONFIG]
-# Correspond to the Wordfence current URL
-API_URL = https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production
+# Correspond to actual URL
+WORDPRESS = https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production
+OSV = https://api.osv.dev/v1/query
+
 # 'True' includes patched exploit in scan, 'False' remove them
 PATCHED = True
 # Min danger to scan for. Values can be 'Low'/'Medium'/'High'/'Critical'
 MIN_DANGER = Medium
 # Since when to scan for vulnerability. 7d = since 7 days and 7w = since 7 weeks
+# Not defined will fetch them all
 #SINCE=7d
 
-# List here plugin by website to scan for
-[MyAwesomeWebsite]
-plugin_list = [
+# List here plugin by application to scan for
+[MyAwesomeApp]
+#This is a Wordpress application with plugins
+scan_type=wordpress
+dependencies = [
     "Activity Log",
     "Advanced Access Manager",
     "Advanced Editor Tools",
@@ -38,10 +43,9 @@ plugin_list = [
     "WPCode Lite",
     "WPS Hide Login"
     ]
-
 # You can also add NTFY configuration in order to send a notification if you find any exploits
 #NOTIFY_URL = https://ntfy.exemple.fr/subject
 #NOTIFY_TOKEN = XXXX
 
 [MyAlsoAwesomeWebsite]
-plugin_list = ["cde","fgh"]
+dependencies = ["cde","fgh"]
