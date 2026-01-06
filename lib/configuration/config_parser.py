@@ -3,9 +3,7 @@ from datetime import datetime, timedelta
 import json
 from typing import List
 
-from models.AppConfig import AppConfig
-from models.DangerLevel import DangerLevel
-from models.ExtractorConfig import ExtractorConfig
+from models import AppConfig, ExtractorConfig, DangerLevel
 
 
 def load_config(path="config.ini"):

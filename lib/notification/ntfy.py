@@ -1,10 +1,10 @@
-import json
 from collections import defaultdict
 from typing import List, Dict
 
 import requests
-from lib import logger
-from models.Vulnerability import Vulnerability
+
+from lib.configuration import logger
+from models import Vulnerability
 
 
 def vuln_ref_to_markdown(vuln : Vulnerability):
@@ -76,25 +76,33 @@ def build_vuln_message(vulns : List[Vulnerability]):
     return "\n".join(lines)
 
 
-def notify_site(site, message, notify_url, token):
+def notify_site(
+        app_name : str,
+        vulns : List[Vulnerability],
+        notify_url : str,
+        token : str
+):
     """
     Send a notification to user using Ntfy API with found vulnerabilities
 
-    :param site: Website concerned
-    :param message: Notification to send
+    :param app_name: Application concerned
+    :param vulns: List of vulnerabilities found
     :param notify_url: Ntfy API URL
     :param token: Token (can be None)
     """
+
+    message = build_vuln_message(vulns)
+
     if not notify_url:
-        logger.debug(f"{site} : No NTFY URL given")
+        logger.debug(f"{app_name} : No NTFY URL given")
         return
 
     if not message:
-        logger.info(f"{site} : No vulnerability to send")
+        logger.info(f"{app_name} : No vulnerability to send")
         return
 
     headers = {
-        "Title": f"{site} security report",
+        "Title": f"{app_name} security report",
         "Markdown": "yes"
     }
 
@@ -103,8 +111,8 @@ def notify_site(site, message, notify_url, token):
     try:
         response = requests.post(notify_url, headers=headers, data=message.encode("utf-8"))
         if response.status_code >= 400:
-            logger.error(f"{site} : NTFY failed with status {response.status_code} - {response.text}")
+            logger.error(f"{app_name} : NTFY failed with status {response.status_code} - {response.text}")
         else:
-            logger.info(f"{site} : Notification sent successfully")
+            logger.info(f"{app_name} : Notification sent successfully")
     except Exception as e:
-        logger.error(f"{site} : Error sending NTFY notification - {e}")
+        logger.error(f"{app_name} : Error sending NTFY notification - {e}")
