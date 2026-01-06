@@ -1,9 +1,13 @@
 import json
 from collections import defaultdict
+from typing import List, Dict
+
 import requests
 from lib import logger
+from models.Vulnerability import Vulnerability
 
-def vuln_ref_to_markdown(vuln):
+
+def vuln_ref_to_markdown(vuln : Vulnerability):
     """
     Return a Markdown link for the vulnerability.
     Priority:
@@ -13,8 +17,8 @@ def vuln_ref_to_markdown(vuln):
     :param vuln: Vulnerability concerned
     :return: Url String
     """
-    url = vuln.get("url")
-    cve = vuln.get("cve")
+    url = vuln.url
+    cve = vuln.severity
 
     if url:
         label = cve if cve and cve != "None" else "reference"
@@ -28,17 +32,16 @@ def vuln_ref_to_markdown(vuln):
     return ""
 
 
-def build_vuln_message(site, vulns):
+def build_vuln_message(vulns : List[Vulnerability]):
     """
     Build a clean Markdown message for ntfy
 
-    :param site: Website concerned
     :param vulns: Vulnerabilities found
     :return: Markdown string of vulnerability
     """
-    grouped = defaultdict(list)
+    grouped : Dict[str, List[Vulnerability]] = defaultdict(list)
     for v in vulns:
-        grouped[v["severity"]].append(v)
+        grouped[v.severity].append(v)
 
     severity_icons = {
         "Critical": "🚨",
@@ -59,10 +62,10 @@ def build_vuln_message(site, vulns):
         lines.append(f"{icon} **{severity} ({len(items)})**")
 
         for v in items:
-            status = "✅ Patched" if v.get("patched") else "❌ Not patched"
+            status = "✅ Patched" if v.patched else "❌ Not patched"
             ref_link = vuln_ref_to_markdown(v)
 
-            line = f"- **{v['plugin']}** — {v['title']} ({status})"
+            line = f"- **{v.plugin_name}** — {v.title} ({status})"
             if ref_link:
                 line += f" — {ref_link}"
 
@@ -73,12 +76,12 @@ def build_vuln_message(site, vulns):
     return "\n".join(lines)
 
 
-def notify_site(site, vulns, notify_url, token):
+def notify_site(site, message, notify_url, token):
     """
     Send a notification to user using Ntfy API with found vulnerabilities
 
     :param site: Website concerned
-    :param vulns: Vulnerabilities found
+    :param message: Notification to send
     :param notify_url: Ntfy API URL
     :param token: Token (can be None)
     """
@@ -86,14 +89,9 @@ def notify_site(site, vulns, notify_url, token):
         logger.debug(f"{site} : No NTFY URL given")
         return
 
-    if not vulns:
+    if not message:
         logger.info(f"{site} : No vulnerability to send")
         return
-
-    logger.info(f"{site} : send {len(vulns)} notification(s)")
-
-    message = build_vuln_message(site, vulns)
-    priority = 4 if any(v["severity"] in ("High", "Critical") for v in vulns) else 3
 
     headers = {
         "Title": f"{site} security report",

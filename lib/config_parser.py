@@ -1,6 +1,11 @@
 import configparser
 from datetime import datetime, timedelta
 import json
+from typing import List
+
+from models.AppConfig import AppConfig
+from models.DangerLevel import DangerLevel
+from models.ExtractorConfig import ExtractorConfig
 
 
 def load_config(path="config.ini"):
@@ -30,23 +35,29 @@ def parse_since(value):
     return None
 
 
-def get_sites(config):
+def get_sites(config, site_type):
     """
     Retrieves the sites configured in the config file
     :param config: Dictionary of configuration
+    :param site_type: Type of website
     :return: Dictionary of sites
     """
-    sites = {}
+    sites : List[AppConfig] = []
 
     for section in config.sections():
         if section == "CONFIG":
             continue
-        
-        sites[section] = {
-            "plugins": [p.strip() for p in json.loads(config[section].get("plugin_list", "None").replace("\n","")) if p.strip()],
-            "notify_url": config[section].get("NOTIFY_URL", "").strip(),
-            "notify_token": config[section].get("NOTIFY_TOKEN", "").strip()
-        }
+
+        if not (config[section].get("app_type") and config[section]["app_type"].lower() == site_type.lower()):
+            continue
+
+        sites.append(AppConfig(
+            app_name=section,
+            plugin_list=[p.strip() for p in json.loads(config[section].get("plugin_list", "None").replace("\n", "")) if
+                         p.strip()],
+            notify_url=config[section].get("notify_url", "").strip(),
+            notify_token=config[section].get("notify_token", "").strip(),
+        ))
 
     return sites
 
@@ -55,7 +66,7 @@ def get_global_filters(config):
     """
     Retrieves the global filters configured in the config file
     :param config: Dictionary of configuration
-    :return: Tuple with transformed configuration
+    :return: Global filters object
     """
     patched = config["CONFIG"].getboolean("PATCHED", fallback=True)
     min_danger = config["CONFIG"].get("MIN_DANGER", "Low")
@@ -63,4 +74,8 @@ def get_global_filters(config):
     since_raw = config["CONFIG"].get("SINCE", "").strip()
     since_date = parse_since(since_raw) if since_raw else None
 
-    return patched, min_danger, since_date
+    return ExtractorConfig(
+        patch=patched,
+        min_danger=DangerLevel(min_danger),
+        since=since_date
+    )
